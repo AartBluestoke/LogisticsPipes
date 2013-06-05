@@ -70,7 +70,7 @@ import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.request.RequestHandler;
 import logisticspipes.utils.ItemIdentifierStack;
 import logisticspipes.utils.gui.DummyModuleContainer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
@@ -90,7 +90,7 @@ public class ServerPacketHandler {
 	}
 	
 	public static void onPacketData(DataInputStream data, Player playerFML) {
-		EntityPlayerMP player = (EntityPlayerMP) playerFML;
+		EntityPlayer player = (EntityPlayer) playerFML;
 		
 		try {
 			final int packetID = data.read();
@@ -407,7 +407,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onModuleGuiOpen(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onModuleGuiOpen(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -440,7 +440,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onGuiBackOpen(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onGuiBackOpen(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -453,7 +453,7 @@ public class ServerPacketHandler {
 		player.openGui(LogisticsPipes.instance, packet.integer, player.worldObj, packet.posX, packet.posY, packet.posZ);
 	}
 
-	private static void onRequestSubmit(EntityPlayerMP player, PacketRequestSubmit packet) {
+	private static void onRequestSubmit(EntityPlayer player, PacketRequestSubmit packet) {
 		final TileGenericPipe pipe = MainProxy.proxy.getPipeInDimensionAt(packet.dimension, packet.posX, packet.posY, packet.posZ, player);
 		if (pipe == null) {
 			return;
@@ -466,7 +466,7 @@ public class ServerPacketHandler {
 		RequestHandler.request(player, packet, (CoreRoutedPipe) pipe.pipe);
 	}
 	
-	private static void onRequestComponents(EntityPlayerMP player, PacketRequestSubmit packet) {
+	private static void onRequestComponents(EntityPlayer player, PacketRequestSubmit packet) {
 		final TileGenericPipe pipe = MainProxy.proxy.getPipeInDimensionAt(packet.dimension, packet.posX, packet.posY, packet.posZ, player);
 		if (pipe == null) {
 			return;
@@ -479,7 +479,7 @@ public class ServerPacketHandler {
 		RequestHandler.simulate(player, packet, (CoreRoutedPipe) pipe.pipe);
 	}
 
-	private static void onRefreshRequest(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onRefreshRequest(EntityPlayer player, PacketPipeInteger packet) {
 		int dimension = (packet.integer - (packet.integer % 10)) / 10;
 		final TileGenericPipe pipe = MainProxy.proxy.getPipeInDimensionAt(dimension, packet.posX, packet.posY, packet.posZ, player);
 		if (pipe == null) {
@@ -508,7 +508,7 @@ public class ServerPacketHandler {
 		RequestHandler.refresh(player, (CoreRoutedPipe) pipe.pipe, option);
 	}
 
-	private static void onItemSinkDefault(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onItemSinkDefault(EntityPlayer player, PacketPipeInteger packet) {
 		final int value = ((packet.integer % 10) + 10) % 10;
 		final int slot = packet.integer / 10;
 		
@@ -554,7 +554,7 @@ public class ServerPacketHandler {
 	}
 
 
-	private static void onExtractorModeChange(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onExtractorModeChange(EntityPlayer player, PacketPipeInteger packet) {
 		final int value = ((packet.integer % 10) + 10) % 10;
 		final int slot = packet.integer / 10;
 		if(slot < 0) {
@@ -603,7 +603,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onProviderModuleModeChange(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onProviderModuleModeChange(EntityPlayer player, PacketPipeInteger packet) {
 		final int slot = packet.integer;
 		if(slot < 0) {
 			if(player.openContainer instanceof DummyModuleContainer) {
@@ -649,7 +649,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onProviderModuleIncludeChange(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onProviderModuleIncludeChange(EntityPlayer player, PacketPipeInteger packet) {
 		final int slot = packet.integer;
 		if(slot < 0) {
 			if(player.openContainer instanceof DummyModuleContainer) {
@@ -696,7 +696,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onAdvancedExtractorModuleIncludeChange(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onAdvancedExtractorModuleIncludeChange(EntityPlayer player, PacketPipeInteger packet) {
 		final int slot = packet.integer / 10;
 		if(slot < 0) {
 			if(player.openContainer instanceof DummyModuleContainer) {
@@ -743,7 +743,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onAdvancedExtractorModuleGuiSneaky(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onAdvancedExtractorModuleGuiSneaky(EntityPlayer player, PacketPipeInteger packet) {
 		final int slot = packet.integer;
 		if(slot < 0) {
 			if(player.openContainer instanceof DummyModuleContainer) {
@@ -791,7 +791,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onPipeUpdateRequest(EntityPlayerMP playerEntity, PacketCoordinates packet) {
+	private static void onPipeUpdateRequest(EntityPlayer playerEntity, PacketCoordinates packet) {
 		final TileGenericPipe pipe = getPipe(playerEntity.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -800,7 +800,7 @@ public class ServerPacketHandler {
 		((CoreRoutedPipe)pipe.pipe).refreshRender(true);
 	}
 
-	private static void onCraftingPipeUpdateRequest(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onCraftingPipeUpdateRequest(EntityPlayer player, PacketCoordinates packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -815,7 +815,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onCraftingPipeOpenConnectedGui(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onCraftingPipeOpenConnectedGui(EntityPlayer player, PacketCoordinates packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -827,7 +827,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onDiskContentRequest(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onDiskContentRequest(EntityPlayer player, PacketCoordinates packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -842,7 +842,7 @@ public class ServerPacketHandler {
 		}		
 	}
 
-	private static void onDiskSetName(EntityPlayerMP player, PacketPipeString packet) {
+	private static void onDiskSetName(EntityPlayer player, PacketPipeString packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -859,7 +859,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onDiskChangeClientSide(EntityPlayerMP player, PacketItem packet) {
+	private static void onDiskChangeClientSide(EntityPlayer player, PacketItem packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -870,7 +870,7 @@ public class ServerPacketHandler {
 		onDiskContentRequest(player, packet);
 	}
 
-	private static void onDiskDrop(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onDiskDrop(EntityPlayer player, PacketCoordinates packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -881,7 +881,7 @@ public class ServerPacketHandler {
 		onDiskContentRequest(player, packet);
 	}
 
-	private static void onDiskMacroRequest(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onDiskMacroRequest(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -913,7 +913,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onBeeModuleSetBee(EntityPlayerMP player, PacketPipeBeePacket packet) {
+	private static void onBeeModuleSetBee(EntityPlayer player, PacketPipeBeePacket packet) {
 		ModuleApiaristSink sink;
 		if(packet.integer1 < 0) {
 			if(player.openContainer instanceof DummyModuleContainer) {
@@ -957,7 +957,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onLiquidSupplierPartials(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onLiquidSupplierPartials(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -973,7 +973,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onInvSysContentRequest(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onInvSysContentRequest(EntityPlayer player, PacketCoordinates packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -987,7 +987,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onHUDWatchingChange(EntityPlayerMP player, PacketPipeInteger packet, boolean add) {
+	private static void onHUDWatchingChange(EntityPlayer player, PacketPipeInteger packet, boolean add) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -1003,7 +1003,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onInvSysConResistance(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onInvSysConResistance(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -1015,7 +1015,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onCraftingPipeStackMove(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onCraftingPipeStackMove(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -1029,7 +1029,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onHUDModuleWatchingChange(EntityPlayerMP player, PacketPipeInteger packet, boolean flag) {
+	private static void onHUDModuleWatchingChange(EntityPlayer player, PacketPipeInteger packet, boolean flag) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -1046,7 +1046,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onElectricModuleStateChange(EntityPlayerMP player, PacketModuleInteger packet) {
+	private static void onElectricModuleStateChange(EntityPlayer player, PacketModuleInteger packet) {
 		if(packet.slot < 0) {
 			if(player.openContainer instanceof DummyModuleContainer) {
 				DummyModuleContainer dummy = (DummyModuleContainer) player.openContainer;
@@ -1069,14 +1069,14 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onRotationRequest(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onRotationRequest(EntityPlayer player, PacketCoordinates packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof IRotationProvider) {
 			MainProxy.sendPacketToPlayer(new PacketPipeInteger(NetworkConstants.ROTATION_SET, packet.posX, packet.posY, packet.posZ, ((IRotationProvider)tile).getRotation()).getPacket(), (Player)player);
 		}
 	}
 
-	private static void onPriorityUp(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onPriorityUp(EntityPlayer player, PacketCoordinates packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -1089,7 +1089,7 @@ public class ServerPacketHandler {
 		((BaseLogicCrafting) pipe.pipe.logic).priorityUp(player);
 	}
 
-	private static void onPriorityDown(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onPriorityDown(EntityPlayer player, PacketCoordinates packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -1102,7 +1102,7 @@ public class ServerPacketHandler {
 		((BaseLogicCrafting) pipe.pipe.logic).priorityDown(player);
 	}
 
-	private static void onHUDBlockWatch(EntityPlayerMP player, PacketCoordinates packet, boolean flag) {
+	private static void onHUDBlockWatch(EntityPlayer player, PacketCoordinates packet, boolean flag) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof IBlockWatchingHandler) {
 			if(flag) {
@@ -1113,7 +1113,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onHUDSettings(EntityPlayerMP player, PacketHUDSettings packet) {
+	private static void onHUDSettings(EntityPlayer player, PacketHUDSettings packet) {
 		if(player.inventory.getStackInSlot(packet.slot) == null) return;
 		HUDConfig config = new HUDConfig(player.inventory.getStackInSlot(packet.slot));
 		switch(packet.buttonId) {
@@ -1179,7 +1179,7 @@ public class ServerPacketHandler {
 		MainProxy.proxy.updateNames(packetAs.item, packetAs.name);
 	}
 
-	private static void onLiquidRefreshRequest(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onLiquidRefreshRequest(EntityPlayer player, PacketPipeInteger packet) {
 		int dimension = packet.integer;
 		final TileGenericPipe pipe = MainProxy.proxy.getPipeInDimensionAt(dimension, packet.posX, packet.posY, packet.posZ, player);
 		if (pipe == null) {
@@ -1193,7 +1193,7 @@ public class ServerPacketHandler {
 		RequestHandler.refreshLiquid(player, (CoreRoutedPipe) pipe.pipe);
 	}
 
-	private static void onLiquidRequestSubmit(EntityPlayerMP player, PacketRequestSubmit packet) {
+	private static void onLiquidRequestSubmit(EntityPlayer player, PacketRequestSubmit packet) {
 		final TileGenericPipe pipe = MainProxy.proxy.getPipeInDimensionAt(packet.dimension, packet.posX, packet.posY, packet.posZ, player);
 		if (pipe == null) {
 			return;
@@ -1209,7 +1209,7 @@ public class ServerPacketHandler {
 		RequestHandler.requestLiquid(player, packet, (CoreRoutedPipe) pipe.pipe, (IRequestLiquid) pipe.pipe);
 	}
 
-	private static void onModBasedItemSinkList(EntityPlayerMP player, PacketModuleNBT packet) {
+	private static void onModBasedItemSinkList(EntityPlayer player, PacketModuleNBT packet) {
 		if(packet.slot < 0) {
 			if(player.openContainer instanceof DummyModuleContainer) {
 				DummyModuleContainer dummy = (DummyModuleContainer) player.openContainer;
@@ -1230,7 +1230,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onThaumicAspectSinkList(EntityPlayerMP player, PacketModuleNBT packet) {
+	private static void onThaumicAspectSinkList(EntityPlayer player, PacketModuleNBT packet) {
 		if(packet.slot < 0) {
 			if(player.openContainer instanceof DummyModuleContainer) {
 				DummyModuleContainer dummy = (DummyModuleContainer) player.openContainer;
@@ -1250,7 +1250,7 @@ public class ServerPacketHandler {
 		}		
 	}
 
-	private static void onCheatJunctionPower(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onCheatJunctionPower(EntityPlayer player, PacketCoordinates packet) {
 		World world = player.worldObj;
 		if (!world.blockExists(packet.posX, packet.posY, packet.posZ)) {
 			return;
@@ -1262,7 +1262,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onFirewallFlags(EntityPlayerMP player, PacketPipeBitSet packet) {
+	private static void onFirewallFlags(EntityPlayer player, PacketPipeBitSet packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if(pipe == null) {
 			return;
@@ -1274,14 +1274,14 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onSecurityCardButton(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onSecurityCardButton(EntityPlayer player, PacketPipeInteger packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof LogisticsSecurityTileEntity) {
 			((LogisticsSecurityTileEntity)tile).buttonFreqCard(packet.integer, player);
 		}
 	}
 
-	private static void onPlayerListRequest(EntityPlayerMP player) {
+	private static void onPlayerListRequest(EntityPlayer player) {
 		List<String> list = new LinkedList<String>();
 		File root = DimensionManager.getCurrentSaveRootDirectory();
 		if(root == null) return;
@@ -1296,7 +1296,7 @@ public class ServerPacketHandler {
 		MainProxy.sendPacketToPlayer(new PacketStringList(NetworkConstants.PLAYER_LIST, list).getPacket(), (Player) player);
 	}
 
-	private static void onOpenSecurityPlayer(EntityPlayerMP player, PacketStringCoordinates packet) {
+	private static void onOpenSecurityPlayer(EntityPlayer player, PacketStringCoordinates packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof LogisticsSecurityTileEntity) {
 			if (packet.string != null || packet.string != "") {
@@ -1305,21 +1305,21 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onSaveSecurityPlayer(EntityPlayerMP player, PacketNBT packet) {
+	private static void onSaveSecurityPlayer(EntityPlayer player, PacketNBT packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof LogisticsSecurityTileEntity) {
 			((LogisticsSecurityTileEntity)tile).saveNewSecuritySettings(packet.tag);
 		}
 	}
 
-	private static void onSetSecurityCC(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onSetSecurityCC(EntityPlayer player, PacketPipeInteger packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof LogisticsSecurityTileEntity) {
 			((LogisticsSecurityTileEntity)tile).changeCC();
 		}
 	}
 
-	private static void onSecurityAuthorizationChanged(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onSecurityAuthorizationChanged(EntityPlayer player, PacketPipeInteger packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof LogisticsSecurityTileEntity) {
 			if (packet.integer == 1) {
@@ -1330,7 +1330,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onCraftingPipeNextSatelliteAdvanced(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onCraftingPipeNextSatelliteAdvanced(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -1343,7 +1343,7 @@ public class ServerPacketHandler {
 		((BaseLogicCrafting) pipe.pipe.logic).setNextSatellite(player, packet.integer);
 	}
 
-	private static void onApiaristAnalyserChangeExtract(EntityPlayerMP player, PacketModuleInteger packet) {
+	private static void onApiaristAnalyserChangeExtract(EntityPlayer player, PacketModuleInteger packet) {
 		if(packet.slot < 0) {
 			if(player.openContainer instanceof DummyModuleContainer) {
 				DummyModuleContainer dummy = (DummyModuleContainer) player.openContainer;
@@ -1367,7 +1367,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onCraftingPipePrevSatelliteAdvanced(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onCraftingPipePrevSatelliteAdvanced(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -1380,7 +1380,7 @@ public class ServerPacketHandler {
 		((BaseLogicCrafting) pipe.pipe.logic).setPrevSatellite(player, packet.integer);
 	}
 
-	private static void onAddCCID(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onAddCCID(EntityPlayer player, PacketPipeInteger packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof LogisticsSecurityTileEntity) {
 			((LogisticsSecurityTileEntity)tile).addCCToList(packet.integer);
@@ -1388,7 +1388,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onRemoveCCID(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onRemoveCCID(EntityPlayer player, PacketPipeInteger packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof LogisticsSecurityTileEntity) {
 			((LogisticsSecurityTileEntity)tile).removeCCFromList(packet.integer);
@@ -1396,21 +1396,21 @@ public class ServerPacketHandler {
 		}
 	}
 
-	private static void onRequestCCIDs(EntityPlayerMP player, PacketCoordinates packet) {
+	private static void onRequestCCIDs(EntityPlayer player, PacketCoordinates packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof LogisticsSecurityTileEntity) {
 			((LogisticsSecurityTileEntity)tile).requestList(player);
 		}
 	}
 
-	private static void onSetSecurityDestroy(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onSetSecurityDestroy(EntityPlayer player, PacketPipeInteger packet) {
 		TileEntity tile = player.worldObj.getBlockTileEntity(packet.posX, packet.posY, packet.posZ);
 		if(tile instanceof LogisticsSecurityTileEntity) {
 			((LogisticsSecurityTileEntity)tile).changeDestroy();
 		}
 	}
 
-	private static void onCraftingPipeNextLiquidSatelliteAdvanced(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onCraftingPipeNextLiquidSatelliteAdvanced(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -1423,7 +1423,7 @@ public class ServerPacketHandler {
 		((BaseLogicCrafting) pipe.pipe.logic).setNextLiquidSatellite(player, packet.integer);
 	}
 
-	private static void onCraftingPipePrevLiquidSatelliteAdvanced(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onCraftingPipePrevLiquidSatelliteAdvanced(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -1436,7 +1436,7 @@ public class ServerPacketHandler {
 		((BaseLogicCrafting) pipe.pipe.logic).setPrevLiquidSatellite(player, packet.integer);
 	}
 
-	private static void onCraftingPipeLiquidAmountChange(EntityPlayerMP player, PacketModuleInteger packet) {
+	private static void onCraftingPipeLiquidAmountChange(EntityPlayer player, PacketModuleInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
@@ -1449,7 +1449,7 @@ public class ServerPacketHandler {
 		((BaseLogicCrafting) pipe.pipe.logic).changeLiquidAmount(packet.integer, packet.slot, player);
 	}
 
-	private static void onLiquidSuppierPipeAmount(EntityPlayerMP player, PacketPipeInteger packet) {
+	private static void onLiquidSuppierPipeAmount(EntityPlayer player, PacketPipeInteger packet) {
 		final TileGenericPipe pipe = getPipe(player.worldObj, packet.posX, packet.posY, packet.posZ);
 		if (pipe == null) {
 			return;
