@@ -284,7 +284,7 @@ public class BuildCraftProxy implements IBCProxy {
 				}
 				if(override == IPipeConnection.ConnectOverride.DISCONNECT) {
 					//nope, maybe you'd like some BC power?
-					if(pipe.getCPipe().getUpgradeManager().hasBCPowerSupplierUpgrade()) {
+					if(pipe.getPipe().getUpgradeManager().hasBCPowerSupplierUpgrade()) {
 						override = ((IPipeConnection) with).overridePipeConnection(PipeType.POWER, side.getOpposite());
 					}
 				}
